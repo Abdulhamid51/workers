@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+{% load humanize %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profilim</title>
+    <link rel="stylesheet" href="/static/css/profil.css" />
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  </head>
+  <body>
+    <nav class="navbar">
+        <h1>Mening profilim</h1>
+    </nav>
+
+    <div class="container">
+        <div class="user_profile">
+            <div class="user_picture_name">
+                <div><img src="{{ worker.image.url }}" alt="profil"></div>
+                <div><p>{{ worker.user.first_name}} {{ worker.user.last_name}}</p></div>
+            </div>
+            <div class="user_about">
+                <div class="hisobim_pullar">
+                    <p>Hisobim</p>
+                    <p>Olingan pullar</p>
+                </div>
+                <div class="money">
+                    <div><p>{{ worker.balance|intcomma }} so'm</p></div>
+                    <div><p>{{ worker.got_balance }} so'm</p></div>
+                </div>
+            </div>
+        </div>
+
+        
+      <a href="miniHistory.html">
+        <div class="history_" id="first_box">
+            <div><i class="fa-solid fa-dollar-sign"></i><p>Oldi berdi tarixi</p></div>
+            <div class="circle"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+      </a>
+        <div class="history_" id="btn_">
+            <div><i class="fa-solid fa-mobile"></i><p>Kirilgan qurilmalar</p></div>
+            <div class="circle"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+      <a href="/logout/">
+        <div class="history_">
+          <div><i class="fa-solid fa-right-from-bracket"></i><p>Chiqish</p></div>
+          <div><p class="red_text">Kirilgan sana: 12-12-2022</p></div>
+        </div>
+      </a>
+    </div>
+
+    <div class="container_box">
+      <div class="drop_box">
+        <div class="close">
+          <p>Kirilgan qurilmalar</p>
+          <div class="drop_close"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+        <div class="mobile">
+          <i class="fa-solid fa-mobile color_mobile"></i>
+          <p>Rdmi Note 8 pro</p>
+        </div>
+        <div class="desktop">
+          <i class="fa-solid fa-desktop color_mobile"></i>
+          <p>Windows 11</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+        <div>
+          <a href="/history/"><i class="fa-solid fa-clock-rotate-left"></i></a>
+        </div>
+        <div>
+          <a href="/"><i class="fa fa-house"></i></a>
+        </div>
+        <div>
+          <a href="/profile/"><i class="fa-regular fa-user"></i></a>
+        </div>
+      </footer>
+
+      <script src="/static/js/profil.js"></script>
+  </body>
+</html>

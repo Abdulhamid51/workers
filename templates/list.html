@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% load humanize %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ishlar_ro'yhati</title>
+    <link rel="stylesheet" href="/static/css/list.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <h1>Ishlar ro'yhati</h1>
+    </nav>
+    <div class="container">
+      
+      {% for work in works %}
+        
+        {% if work.category.type == 'dona' %}
+        <div class="join_box">
+          <div class="join_container">
+            <div class="join_name">
+              <h2>{{ work.category.name }}</h2>
+            </div>
+            <div class="join_number">
+              <div class="join_content_number">
+                <input data-id="{{work.id}}" class="work-counter" type="number" value="{{ work.count }}" />
+              </div>
+              <div class="add">
+                <p>dona</p>
+              </div>
+            </div>
+          </div>
+          <div class="bottom_content">
+            <h2>Narxi: {{ work.category.price|intcomma }} so'm</h2>
+            <h2>Umumiy: {{ work.sum|intcomma }} so'm</h2>
+          </div>
+        </div>
+        {% elif work.category.type == 'metr' %}
+        <div class="join_box">
+          <div class="join_container">
+            <div class="join_name">
+              <h2>{{ work.category.name }}</h2>
+            </div>
+            <div class="join_number">
+              <div class="join_content_number">
+                <input data-id="{{work.id}}" class="work-counter" type="number" step="any" value="{{ work.length }}" />
+              </div>
+              <div class="add">
+                <p>metr</p>
+              </div>
+            </div>
+          </div>
+          <div class="bottom_content">
+            <h2>Narxi: {{ work.category.price|intcomma }} so'm</h2>
+            <h2>Umumiy: {{ work.sum|intcomma }} so'm</h2>
+          </div>
+        </div>
+        {% else %}
+        
+        {% endif %}
+          
+      {% endfor %}
+
+    </div>
+
+
+    <div class="solo_container">
+      <div class="join_box general">
+        <div class="join_container">
+          <div>
+            <p>Umumiy ishlar:</p>
+          </div>
+          <div class="">
+            <p>{{ works.all.count }} ta</p>
+          </div>
+        </div>
+        <div class="bottom_content">
+          <p>Umumiy narxi:</p>
+          <p>{{ day.sum|intcomma }} so'm</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="/">
+      <div class="solo_container">
+        <div class="solo">
+          <h3>Saqlash</h3>
+        </div>
+      </div>
+    </a>
+
+    <footer>
+      <div>
+        <a href="/history/"><i class="fa-solid fa-clock-rotate-left"></i></a>
+      </div>
+      <div>
+        <a href="/"><i class="fa fa-house"></i></a>
+      </div>
+      <div>
+        <a href="/profile/"><i class="fa-regular fa-user"></i></a>
+      </div>
+    </footer>
+
+    <script src="/static/js/jquery.min.js"></script>
+
+    <script>
+
+      $('input.work-counter').on('change', function(){
+        let id = $(this).data('id')
+        let value = $(this).val()
+        $.ajax({
+          url:`/ajax_work_counter/${id}`,
+          type:'get',
+          data:{'value':value},
+          success: function(response){
+            console.log(response['status'])
+          }
+        })
+      })
+
+    </script>
+  </body>
+</html>
