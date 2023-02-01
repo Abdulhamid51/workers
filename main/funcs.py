@@ -59,6 +59,5 @@ def work_counter(work_id, count):
     else:
         work.length = count
     work.save()
-    print(work.length)
     return True
 
