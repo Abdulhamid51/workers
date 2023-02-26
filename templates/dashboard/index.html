@@ -1,0 +1,158 @@
+{% extends 'dashboard/wrapper.html' %}
+{% load humanize %}
+      <!-- partial -->
+      
+      {% block wrapper %}
+
+ 
+        
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row">
+            <div class="col-md-12 grid-margin">
+              <div class="d-flex justify-content-between flex-wrap">
+                <div class="d-flex align-items-end flex-wrap">
+                  <div class="mr-md-3 mr-xl-5">
+                    <h2>Workers.uz dasturiga xush kelibsiz.</h2>
+                    <p class="mb-md-0">Ishchilaringiz haqida ma'lumotlarni shu yerdan olishingiz mumkun.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body dashboard-tabs p-0">
+                  <div class="tab-content py-0 px-0">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+
+                      <div class="d-flex flex-wrap justify-content-xl-between">
+                        <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                          <i class="mdi mdi-currency-usd mr-3 icon-lg text-primary"></i>
+                          <div class="d-flex flex-column justify-content-around">
+                            <small class="mb-1 text-muted">Berilgan summa</small>
+                            <h5 class="mr-2 mb-0">{{admin.gave_money|intcomma}} so'm</h5>
+                          </div>
+                        </div>
+                        <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                          <i class="mdi mdi-upload mr-3 icon-lg text-warning"></i>
+                          <div class="d-flex flex-column justify-content-around">
+                            <small class="mb-1 text-muted">Berilish kerak bo'lgan summa</small>
+                            <h5 class="mr-2 mb-0">{{admin.workers_money|intcomma}} so'm</h5>
+                          </div>
+                        </div>
+                        <div class="d-flex border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                          <i class="mdi mdi-account-multiple mr-3 icon-lg text-success"></i>
+                          <div class="d-flex flex-column justify-content-around">
+                            <small class="mb-1 text-muted">Ishchilar soni</small>
+                            <h5 class="mr-2 mb-0">{{admin.workers.all.count}} ta</h5>
+                          </div>
+                        </div>
+                        <div class="d-flex py-3 border-md-right flex-grow-1 align-items-center justify-content-center p-3 item">
+                          <i class="mdi mdi-flag mr-3 icon-lg text-danger"></i>
+                          <div class="d-flex flex-column justify-content-around">
+                            <small class="mb-1 text-muted">Brak qilingan ishlar</small>
+                            <h5 class="mr-2 mb-0">3497843</h5>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr>
+
+          <div class="row">
+            
+            {% for category in admin.work_categories.all %}
+              
+            <div class="col-md-6 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">{{ category.name }}</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>
+                            I.F
+                          </th>
+                          <th style="float: right;">
+                            Xolati
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                        {% for worker in admin.workers.all %}
+                          
+                        <tr>
+                          <td>
+                            {{ worker.user.first_name }} {{ worker.user.last_name }}
+                          </td>
+                          <td>
+                            <div >
+                              {% if category in worker.works.all %}
+                                  <input data-id="{{category.id}}" data-wid="{{worker.id}}" style="float: right; width: 20px; height: 20px; cursor: pointer;" class="status-change" type="checkbox" checked>
+                                  {% else %}
+                                  <input data-id="{{category.id}}" data-wid="{{worker.id}}" style="float: right; width: 20px; height: 20px; cursor: pointer;" class="status-change" type="checkbox">
+                              {% endif %}
+                            </div>
+                          </td>
+                        </tr>
+
+                        {% endfor %}
+                          
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {% endfor %}
+              
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="d-sm-flex justify-content-center justify-content-sm-between">
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2018 <a href="https://www.urbanui.com/" target="_blank">Urbanui</a>. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="mdi mdi-heart text-danger"></i></span>
+          </div>
+        </footer>
+        <!-- partial -->
+      </div>
+
+      <script src="/static/js/jquery.min.js"></script>
+
+      <script>
+
+        $('.status-change').on('change', function(){
+          let status = $(this).prop("checked")
+          let id = $(this).data("id")
+          let wid = $(this).data("wid")
+          $.ajax({
+            url:'/status_work/',
+            type:'get',
+            data:{
+              'status':status,
+              'id':id,
+              'wid':wid
+            },
+            success:function(response){
+              console.log(response['response'])
+            }
+          })
+        })
+
+      </script>
+       
+      {% endblock wrapper %}

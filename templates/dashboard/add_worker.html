@@ -1,0 +1,109 @@
+{% extends 'dashboard/wrapper.html' %}
+
+
+{% block wrapper %}
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+      {% include 'messages.html' %}
+            <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Ishchi qo'shish</h4>
+                    <form class="form-sample" method="post"> {% csrf_token %}
+                      <p class="card-description">
+                        Shaxsiy ma'lumotlar
+                      </p>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Ismi</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" name="first_name" required/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Familiyasi</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" name="last_name" required/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+													<div class="form-group row">
+														<label class="col-sm-3 col-form-label">Telefon raqami</label>
+														<div class="col-sm-9">
+															<div class="input-group mb-2 mr-sm-2">
+																<div class="input-group-prepend">
+																	<div class="input-group-text">+998</div>
+																</div>
+																<input type="number" data-id="{{ request.user.admin.id }}" id="phone" class="form-control" name="phone" required/>
+                                <div class="input-group-append">
+                                  <button class="btn btn-sm btn-primary" id="get-sms" type="button">SMS kod olish</button>
+                                </div>
+															</div>
+                              <small class="text-primary" id="message"></small>
+														</div>
+													</div>
+                        </div>
+                        <div class="col-md-6">
+													<div class="form-group row">
+														<label class="col-sm-3 col-form-label">SMS kodni yozing</label>
+														<div class="col-sm-9">
+															<div class="input-group mb-2 mr-sm-2 w-50">
+																<input type="number" class="form-control" name="code" required/>
+															</div>
+														</div>
+													</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Tug'ilgan sanasi</label>
+                            <div class="col-sm-9">
+                              <input type="date" class="form-control" name="birth" required/>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Manzili</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" name="address" required/>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Ishchi qo'shish</button>
+                      <button type="reset" class="btn btn-light">Bekor qilish</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+        </div>
+    </div>
+    <script src="/static/js/jquery.js"></script>
+    <script>
+      $('#get-sms').on('click', function(){
+        let phone = $('#phone').val()
+        let id = $('#phone').data('id')
+        $.ajax({
+          url:'/send_sms/',
+          type:'get',
+          data:{
+            'phone':phone,
+            'id':id
+          },
+          success: function(response){
+            $('#message').html(response['status'])
+          }
+        })
+      })
+    </script>
+{% endblock wrapper %}
+    

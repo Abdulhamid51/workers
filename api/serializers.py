@@ -1,14 +1,17 @@
 from rest_framework import serializers
 from main.models import *
 
+class CategoriesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WorkCategory
+        fields = ['name', 'type', 'price']
 
 class WorksSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(
-        queryset=WorkCategory.objects.all(), slug_field="type"
-    )
+    category = CategoriesSerializer(many=False)
     class Meta:
         model = Work
-        fields = ['id', 'category', 'count', 'length', 'sum']
+        fields = ['id', 'category', 'count', 'length', 'sum', 'active']
 
 
 class DaysSerializer(serializers.ModelSerializer):

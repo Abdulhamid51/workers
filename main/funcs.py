@@ -2,6 +2,15 @@ from .models import *
 import datetime
 from dateutil import rrule
 import calendar
+from  django.contrib.auth.models import User
+import random
+
+def code_generator():
+    ver_code_numbers = []
+    for x in range(5):
+        number = random.randint(1,9)
+        ver_code_numbers.append(str(number))
+    return "".join(ver_code_numbers)
 
 TODAY = datetime.datetime.now().strftime('%Y-%m-%d')
 
@@ -47,7 +56,11 @@ def create_daily_works(request_user):
         day = Day.objects.create(worker=worker)
         categories = WorkCategory.objects.all()
         for category in categories:
-            Work.objects.create(day=day, category=category)
+            if category in worker.works.all():
+                Work.objects.create(day=day, category=category, active=True)
+            else:
+                Work.objects.create(day=day, category=category, active=False)
+
     return day
     
 
@@ -61,3 +74,27 @@ def work_counter(work_id, count):
     work.save()
     return True
 
+
+def create_workerprofile(admin_user, phone, f_name, l_name, birth, address):
+    try:
+        user = User.objects.create(
+            username=phone,
+            first_name=f_name,
+            last_name=l_name
+        )
+        password = f_name+phone[:-5]
+        print(password)
+        user.set_password(str(password))
+        user.save()
+        worker = WorkerProfile.objects.create(
+            phone=phone,
+            address=address,
+            birth=birth,
+            user=user,
+            admin=admin_user
+        )
+        status = 'Ishchi qo`shildi'
+    except:
+        status = 'Bu telefon raqam oldin qo`shilgan'
+
+    return status

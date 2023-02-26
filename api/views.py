@@ -1,12 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from main.models import *
 from main.funcs import *
 from .serializers import *
 
 
 class WorkListAPIView(APIView):
-
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         day = create_daily_works(request.user)
         serializer = DaysSerializer(day, many=False)
@@ -14,7 +15,7 @@ class WorkListAPIView(APIView):
 
 
 class HistoryAPIView(APIView):
-
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         worker = WorkerProfile.objects.get(user=request.user)
         try:

@@ -8,10 +8,6 @@ from .models import *
 from .funcs import *
 
 
-class LoginView(LoginView):
-    template_name = 'login.html'
-
-
 class ListView(LoginRequiredMixin, View):
     def get(self, request):
         day = create_daily_works(request.user)
