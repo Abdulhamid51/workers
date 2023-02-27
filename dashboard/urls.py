@@ -6,6 +6,10 @@ urlpatterns = [
     path("", HomePageView.as_view(), name="home"),
     path("add_worker/", AddWorkerView.as_view(), name="add_worker"),
     path("add_work/", AddWorkView.as_view(), name="add_work"),
+    path("works/", WorksListView.as_view(), name="works"),
+    path("give_money/", GiveMoneyHistoryListView.as_view(), name="history"),
+    path("workers/", WorkersListView.as_view(), name="workers"),
+
     path("status_work/", status_work, name="status_work"),
     path("send_sms/", sms_send, name="sms_send"),
     path("login/", LoginView.as_view(), name="login"),

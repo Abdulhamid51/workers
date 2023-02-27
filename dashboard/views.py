@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -63,7 +63,81 @@ class AddWorkerView(LoginRequiredMixin, View):
 class AddWorkView(LoginRequiredMixin, View):
     @is_staff
     def get(self, request):
+        
         return render(request, 'dashboard/add_work.html')
+    
+    @is_staff
+    def post(self, request):
+        try:
+            work_name = request.POST.get('name')
+            price = request.POST.get('price')
+            type = request.POST.get('type')
+            category = add_work(request.user, work_name, price, type)
+            messages.success(request, 'Ish qo`shildi')
+        except:
+            messages.warning(request, 'Nimadur noto`g`ri ketdi')
+
+        return render(request, 'dashboard/add_work.html')
+    
+
+class WorksListView(LoginRequiredMixin, View):
+    @is_staff
+    def get(self, request):
+        try:
+            c_id = int(request.GET.get("id"))
+            category = WorkCategory.objects.get(id=c_id)
+            category.delete()
+            return redirect('/works') 
+        except:
+            categories = WorkCategory.objects.filter(admin=request.user.admin)
+            context = {
+                'works':categories
+            }
+            return render(request, 'dashboard/works_list.html', context)
+    
+    @is_staff
+    def post(self, request):
+        c_id = int(request.POST.get("id"))
+        name = request.POST.get("name")
+        category = WorkCategory.objects.get(id=c_id)
+        category.name = name
+        category.save()
+        return redirect('/works')
+    
+
+class WorkersListView(LoginRequiredMixin, View):
+    @is_staff
+    def get(self, request):
+        workers = WorkerProfile.objects.filter(admin=request.user.admin)
+        context = {
+            'workers':workers
+        }
+        return render(request, 'dashboard/workers_list.html', context)
+    
+
+class GiveMoneyHistoryListView(LoginRequiredMixin, View):
+    @is_staff
+    def get(self, request):
+        histories = BalanceHistory.objects.all().order_by('-id')
+        context = {
+            'histories':histories
+        }
+        return render(request, 'dashboard/history.html', context)
+    
+    @is_staff
+    def post(self, request):
+        admin = AdminProfile.objects.get(user=request.user)
+        w = int(request.POST.get('worker'))
+        worker = WorkerProfile.objects.get(id=w)
+        price = int(request.POST.get('price'))
+        BalanceHistory.objects.create(
+            worker=worker,
+            got_sum=price
+        )
+        admin.gave_money +=price
+        admin.workers_money -= price
+        admin.save()
+        return redirect('/give_money')
     
 
 def sms_send(request):

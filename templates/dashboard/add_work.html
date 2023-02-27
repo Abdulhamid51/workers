@@ -51,21 +51,5 @@
         </div>
     </div>
     <script src="/static/js/jquery.js"></script>
-    <script>
-      $('#get-sms').on('click', function(){
-        let phone = $('#phone').val()
-        let id = $('#phone').data('id')
-        $.ajax({
-          url:'/send_sms/',
-          type:'get',
-          data:{
-            'phone':phone,
-            'id':id
-          },
-          success: function(response){
-            $('#message').html(response['status'])
-          }
-        })
-      })
-    </script>
+
 {% endblock wrapper %}

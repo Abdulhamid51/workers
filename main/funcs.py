@@ -98,3 +98,22 @@ def create_workerprofile(admin_user, phone, f_name, l_name, birth, address):
         status = 'Bu telefon raqam oldin qo`shilgan'
 
     return status
+
+def add_work(request_user, work_name, price, type):
+    admin = AdminProfile.objects.get(user=request_user)
+    workers = WorkerProfile.objects.filter(admin=admin)
+    category = WorkCategory.objects.create(
+        admin=admin,
+        name=work_name,
+        price=price,
+        type=type
+    )
+    for worker in workers:
+        day = worker.days.last()
+        Work.objects.create(
+            day=day,
+            category=category
+        )
+        worker.works.add(category)
+        worker.save()
+    return category

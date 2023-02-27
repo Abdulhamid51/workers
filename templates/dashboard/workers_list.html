@@ -1,0 +1,89 @@
+{% extends 'dashboard/wrapper.html' %}
+{% load humanize %}
+
+{% block wrapper %}
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+      {% include 'messages.html' %}
+            <div class="card">
+                <div class="card-body">
+                <h4 class="card-title">Ishchilar ro'yxati</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                I.F
+                            </th>
+                            <th>
+                                Telefon raqami
+                            </th>
+                            <th>
+                                Balansi
+                            </th>
+                            <th>
+                                Olgan pullari
+                            </th>
+                            <th>
+                                Ishlar soni
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        {% for worker in workers %}
+                                
+                            <tr>
+                                <td class="py-1">
+                                    
+                                    {% if worker.image %}
+                                        <img src="{{worker.image.url}}" alt="image"/>
+                                        {% else %}
+                                        <i class="mdi mdi-account text-primary" style="font-size: 37px;"></i>
+                                    {% endif %}
+                                        
+                                </td>
+                                <td>
+                                    {{worker.user.first_name}} {{worker.user.last_name}}
+                                </td>
+                                <td>
+                                    
+                                    {% if worker.balance == 0 %}
+                                        Hisobida mablag' yo'q
+                                    {% else %}
+                                        {{worker.balance|intcomma}} so'm
+                                    {% endif %}
+                                        
+                                </td>
+                                <td>
+                                    
+                                    {% if worker.got_balance == 0 %}
+                                        Pul olgani yo'q
+                                    {% else %}
+                                        {{worker.got_balance|intcomma}} so'm
+                                    {% endif %}
+
+                                </td>
+                                <td>
+                                    
+                                    {% if worker.works.all.count == 0 %}
+                                        Ish yo'q
+                                        {% else %}
+                                        {{worker.works.all.count}} ta
+                                    {% endif %}
+                                        
+                                </td>
+                            </tr>
+                            
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/jquery.js"></script>
+
+{% endblock wrapper %}

@@ -63,7 +63,7 @@ class Day(models.Model):
 
 
 class Work(models.Model):
-    category = models.ForeignKey(WorkCategory, on_delete=models.CASCADE, related_name='works')
+    category = models.ForeignKey(WorkCategory, on_delete=models.SET_NULL, related_name='works', null=True)
     active = models.BooleanField(default=True)
     day = models.ForeignKey(Day, on_delete=models.CASCADE, related_name='theworks')
     count = models.IntegerField(default=0)
@@ -75,7 +75,7 @@ class Work(models.Model):
 
 
 class BalanceHistory(models.Model):
-    worker = models.ForeignKey(WorkCategory, on_delete=models.CASCADE, related_name='balance_history')
+    worker = models.ForeignKey(WorkerProfile, on_delete=models.CASCADE, related_name='balance_history')
     date = models.DateTimeField(auto_now_add=True)
     got_sum = models.IntegerField()
 

@@ -1,0 +1,104 @@
+{% extends 'dashboard/wrapper.html' %}
+{% load humanize %}
+
+{% block wrapper %}
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+      {% include 'messages.html' %}
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Ishlar ro'yxati</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>
+                    Ish nomi
+                  </th>
+                  <th>
+                    Narxi
+                  </th>
+                  <th style="float: right;">
+                    Amallar
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {% for work in works %}
+                
+                <tr>
+                  <td>
+                    {{ work.name }}
+                  </td>
+                  <td>
+                    {{ work.price|intcomma }} so'm
+                  </td>
+                  <td style="float: right;">
+                    <button type="button" class="btn btn-warning btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#edit{{work.id}}">
+                      <i class="mdi mdi-border-color"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#delete{{work.id}}">
+                      <i class="mdi mdi-delete"></i>
+                    </button>
+
+                    <!-- Modal edit -->
+                    <div class="modal fade" id="edit{{work.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ishni tahrirlash</h5>
+                          </div>
+                          <form method="post">{% csrf_token %}
+                            <div class="modal-body">
+                              <label for="">Ish nomi</label>
+                              <input name="name" type="text" class="form-control" value="{{work.name}}" required>
+                              <input type="text" name="id" style="display: none;" value="{{work.id}}">
+                              <p class="text-warning">Boshqa ma`lumotlarni o`zgartirishni imkoni yo`q !</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                              <button type="submit" class="btn btn-primary">Saqlash</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Modal delete -->
+                    <div class="modal fade" id="delete{{work.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ishni o'chirishni hoxlaysizmi?</h5>
+                          </div>
+                          <form method="get">
+                            <div class="modal-body">
+                              <input type="text" name="id" style="display: none;" value="{{work.id}}">
+                              <p class="text-danger">Ishga oid hamma ma'lumotlar o'chib ketadi!!!</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yo'q</button>
+                              <button type="submit" class="btn btn-primary">Ha</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    
+                  </td>
+                </tr>
+
+                {% endfor %}
+                  
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+        </div>
+    </div>
+    <script src="/static/js/jquery.js"></script>
+
+{% endblock wrapper %}

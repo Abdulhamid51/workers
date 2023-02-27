@@ -1,0 +1,88 @@
+{% extends 'dashboard/wrapper.html' %}
+{% load humanize %}
+
+{% block wrapper %}
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+      {% include 'messages.html' %}
+            <div class="card mb-5">
+                <div class="card-body">
+                <h4 class="card-title">Pul berish</h4>
+                <form class="form-sample" method="post"> {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Ishchi</label>
+                            <div class="col-sm-9">
+                                <select name="worker" required class="form-control">
+                                    
+                                    {% for worker in request.user.admin.workers.all %}
+
+                                    <option value="{{worker.id}}">{{worker.user.first_name}} {{worker.user.last_name}}</option>
+                                        
+                                    {% endfor %}
+                                        
+                                </select>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Summa</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" name="price" required/>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tasdiqlash</button>
+                    <button type="reset" class="btn btn-light">Bekor qilish</button>
+                </form>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Beriilgan pullar</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>
+                                    I.F
+                                </th>
+                                <th>
+                                    Summa
+                                </th>
+                                <th>
+                                    Sana
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            {% for history in histories %}
+                                    
+                                <tr>
+                                    <td>
+                                        {{history.worker.user.first_name}} {{history.worker.user.last_name}}
+                                    </td>
+                                    <td>
+                                        {{history.got_sum|intcomma}} so'm  
+                                    </td>
+                                    <td>
+                                        {{history.date}}
+                                    </td>
+                                </tr>
+                                
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/jquery.js"></script>
+
+{% endblock wrapper %}
