@@ -20,11 +20,36 @@
         <div id="login_username">
             <div class="login_container">
                 <h1>Kirish</h1>
-                <input type="text" placeholder="username" name="username" />
-                <input type="password" placeholder="password" name="password" />
-                <button type="submit">Tasdiqlash</button>
+                <p style="color: yellowgreen;" id="message"></p>
+                <input id="phone" type="text" placeholder="Telefon raqamingiz" name="phone" required/>
+                <input id="code" type="number" placeholder="Tasdiqlash kodi" name="code" required/>
+                <button id="send-code" type="button">SMS yuborish</button>
+                <button id="submit" type="submit">Tasdiqlash</button>
             </div>
         </div>
     </form>
   </body>
+
+  <script src="/static/js/jquery.min.js"></script>
+  <script>
+    $('#code').hide()
+    $('#submit').hide()
+
+    $('#send-code').on('click', function(){
+      let phone = $('#phone').val()
+      $.ajax({
+          url:'/send_sms/',
+          type:'get',
+          data:{
+            'phone':phone
+          },
+          success: function(response){
+            $('#message').html(response['status'])
+            $('#code').show()
+            $('#submit').show()
+            $('#send-code').hide()
+          }
+        })
+    })
+  </script>
 </html>

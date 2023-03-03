@@ -23,7 +23,15 @@
     <div class="container">
         <div class="user_profile">
             <div class="user_picture_name">
-                <div><img src="{{ worker.image.url }}" alt="profil"></div>
+                <div>
+                  
+                  {% if worker.image %}
+                    <img src="{{ worker.image.url }}" alt="profil">
+                    {% else %}
+                    <i class="fa-regular fa-user" style="font-size: 35px; margin-bottom: 10px;"></i>
+                  {% endif %}
+                    
+                </div>
                 <div><p>{{ worker.user.first_name}} {{ worker.user.last_name}}</p></div>
             </div>
             <div class="user_about">
@@ -49,7 +57,7 @@
             <div><i class="fa-solid fa-mobile"></i><p>Kirilgan qurilmalar</p></div>
             <div class="circle"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
-      <a href="/logout/">
+      <a href="/usta/logout/">
         <div class="history_">
           <div><i class="fa-solid fa-right-from-bracket"></i><p>Chiqish</p></div>
           <div><p class="red_text">Kirilgan sana: 12-12-2022</p></div>

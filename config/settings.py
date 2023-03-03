@@ -101,11 +101,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/usta/login/'
+LOGIN_REDIRECT_URL = '/usta/'
 
-LOGOUT_URL = '/logout/'
-LOGOUT_REDIRECT_URL = '/login/'
+LOGOUT_URL = '/usta/logout/'
+LOGOUT_REDIRECT_URL = '/usta/login/'
 
 
 # Database

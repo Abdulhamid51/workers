@@ -8,4 +8,5 @@ urlpatterns = [
     path("login/", views.LoginView.as_view(), name="login"),
     # for ajax
     path("ajax_work_counter/<int:id>", views.list_work_counter, name="ajax_work_count"),
+    path("send_sms/", views.sms_send, name="sms_send"),
 ]

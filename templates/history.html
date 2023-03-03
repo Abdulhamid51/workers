@@ -42,26 +42,30 @@
           <div class="about_history">
             <div><p>{{ day.date |date:"d - F"}}</p></div>
             <div><p>Summasi: {{day.sum|intcomma}} so'm</p></div>
-            <div id="btn__" class="arrow"><i class="fa-solid fa-arrow-down"></i></div>
+            <div class="arrow"><i class="fa-solid fa-list"></i></div>
           </div>
-          
-          
-          <div class="">
+          <br>
+          <div>
             {% for work in day.theworks.all %}
-            <div id="" class="history_number">
+            
+            {% if work.count or work.length != 0 %}
+            <div style="margin: 5px;" class="history_number">
               <div><p>{{work.category.name|truncatechars:30}}</p></div>
               <div><p>
                 
                 {% if work.category.type == 'dona' %}
-                  {{ work.count}}
-                  dona
-                  {% else %}
-                  {{ work.length}}
-                  metr
+                {{ work.count}}
+                dona
+                {% else %}
+                {{ work.length}}
+                metr
                 {% endif %}
-                  
+                
               </p></div>
             </div>
+            {% else %}
+            {% endif %}
+              
             {% endfor %}
           </div>
           
