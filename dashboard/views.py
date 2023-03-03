@@ -23,9 +23,21 @@ class HomePageView(LoginRequiredMixin, View):
         for worker in workers:
             create_daily_works(worker.user)
         context = {
-            "admin":admin
+            "admin":admin,
+            "workers_b":workers.order_by('-balance')[:5],
+            "workers_g":workers.order_by('-got_balance')[:5],
         }
         return render(request, 'dashboard/index.html', context)
+    
+
+class PlanWorksView(LoginRequiredMixin, View):
+    @is_staff
+    def get(self, request):
+        admin = AdminProfile.objects.get(user=request.user)
+        context = {
+            "admin":admin
+        }
+        return render(request, 'dashboard/planworks.html', context)
 
 
 class AddWorkerView(LoginRequiredMixin, View):
@@ -99,8 +111,10 @@ class WorksListView(LoginRequiredMixin, View):
     def post(self, request):
         c_id = int(request.POST.get("id"))
         name = request.POST.get("name")
+        price = request.POST.get("price")
         category = WorkCategory.objects.get(id=c_id)
         category.name = name
+        category.price = price
         category.save()
         return redirect('/works')
     
@@ -118,11 +132,17 @@ class WorkersListView(LoginRequiredMixin, View):
 class GiveMoneyHistoryListView(LoginRequiredMixin, View):
     @is_staff
     def get(self, request):
-        histories = BalanceHistory.objects.all().order_by('-id')
-        context = {
-            'histories':histories
-        }
-        return render(request, 'dashboard/history.html', context)
+        try:
+            w_id = request.GET.get('worker_id')
+            worker = WorkerProfile.objects.get(id=w_id)
+            balance = worker.balance
+            return JsonResponse({"balance":balance})
+        except:
+            histories = BalanceHistory.objects.all().order_by('-id')
+            context = {
+                'histories':histories
+            }
+            return render(request, 'dashboard/history.html', context)
     
     @is_staff
     def post(self, request):
@@ -134,6 +154,9 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
             worker=worker,
             got_sum=price
         )
+        worker.balance -= price
+        worker.got_balance += price
+        worker.save()
         admin.gave_money +=price
         admin.workers_money -= price
         admin.save()
@@ -163,8 +186,6 @@ def sms_send(request):
     url = "https://api.xssh.uz/smsv1/?data="+payload
 
     response = requests.request("POST", url)
-
-    print(response.json())
 
     if response.json()['ok'] == True:
         admin.code = CODE

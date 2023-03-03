@@ -5,7 +5,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WorkCategory
-        fields = ['name', 'type', 'price']
+        fields = ['id', 'name', 'type', 'price']
 
 class WorksSerializer(serializers.ModelSerializer):
     category = CategoriesSerializer(many=False)

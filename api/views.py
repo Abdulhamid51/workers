@@ -12,6 +12,15 @@ class WorkListAPIView(APIView):
         day = create_daily_works(request.user)
         serializer = DaysSerializer(day, many=False)
         return Response(serializer.data)
+    
+    def put(self, request):
+        worker = WorkerProfile.objects.get(user=request.user)
+        serializer = DaysSerializer(instance=worker, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response({"error":True})
+        return Response(serializer.data)
 
 
 class HistoryAPIView(APIView):

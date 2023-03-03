@@ -66,44 +66,45 @@
             </div>
           </div>
 
-          <hr>
-
           <div class="row">
-            
-            {% for category in admin.work_categories.all %}
-              
             <div class="col-md-6 mb-3">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">{{ category.name }}</h4>
+                  <h4 class="card-title">Eng ko'p pul olishi kerak bo'lgan ichilar</h4>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
                         <tr>
                           <th>
+                            #
+                          </th>
+                          <th>
                             I.F
                           </th>
                           <th style="float: right;">
-                            Xolati
+                            Summasi
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         
-                        {% for worker in admin.workers.all %}
+                        {% for worker in workers_b %}
                           
                         <tr>
                           <td>
-                            {{ worker.user.first_name }} {{ worker.user.last_name }}
+                            {{ forloop.counter }}
                           </td>
                           <td>
-                            <div >
-                              {% if category in worker.works.all %}
-                                  <input data-id="{{category.id}}" data-wid="{{worker.id}}" style="float: right; width: 20px; height: 20px; cursor: pointer;" class="status-change" type="checkbox" checked>
-                                  {% else %}
-                                  <input data-id="{{category.id}}" data-wid="{{worker.id}}" style="float: right; width: 20px; height: 20px; cursor: pointer;" class="status-change" type="checkbox">
-                              {% endif %}
-                            </div>
+                            {{ worker.user.first_name }} {{ worker.user.last_name }}
+                          </td>
+                          <td style="float: right;">
+                            
+                            {% if worker.balance == 0 %}
+                              Mablag' yo'q
+                              {% else %}
+                              {{ worker.balance }}
+                            {% endif %}
+                              
                           </td>
                         </tr>
 
@@ -116,9 +117,60 @@
               </div>
             </div>
 
-            {% endfor %}
+            <div class="col-md-6 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Eng ko'p pul olgan ichilar</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>
+                            #
+                          </th>
+                          <th>
+                            I.F
+                          </th>
+                          <th style="float: right;">
+                            Summasi
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        
+                        {% for worker in workers_g %}
+                          
+                        <tr>
+                          <td>
+                            {{ forloop.counter }}
+                          </td>
+                          <td>
+                            {{ worker.user.first_name }} {{ worker.user.last_name }}
+                          </td>
+                          <td style="float: right;">
+                            
+                            {% if worker.got_balance == 0 %}
+                              Mablag' yo'q
+                              {% else %}
+                              {{ worker.got_balance }}
+                            {% endif %}
+                              
+                          </td>
+                        </tr>
+
+                        {% endfor %}
+                          
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
               
           </div>
+
+          <hr>
+
         </div>
         <!-- content-wrapper ends -->
         <!-- partial:partials/_footer.html -->
