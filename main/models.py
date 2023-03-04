@@ -9,6 +9,7 @@ class AdminProfile(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     gave_money = models.IntegerField(default=0)
     workers_money = models.IntegerField(default=0)
+    bugs_money = models.IntegerField(default=0)
 
     code = models.IntegerField(default=0)
 
@@ -22,6 +23,7 @@ class WorkerProfile(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     balance = models.IntegerField(default=0)
     got_balance = models.IntegerField(default=0)
+    bugs_sum = models.IntegerField(default=0)
     image = models.FileField(upload_to='profile_images/', blank=True, null=True)
 
     birth = models.DateField(blank=True)
@@ -84,6 +86,16 @@ class BalanceHistory(models.Model):
 
     def __str__(self):
         return str(self.date)
+    
+
+class BugWork(models.Model):
+    worker = models.ForeignKey(WorkerProfile, on_delete=models.CASCADE, related_name='bugs')
+    date = models.DateTimeField(auto_now_add=True)
+    price = models.IntegerField(default=0)
+    info = models.CharField(max_length=350)
+
+    def __str__(self):
+        return self.info
 
 
 # @receiver(post_save, sender=User)

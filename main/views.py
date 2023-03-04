@@ -105,13 +105,22 @@ def sms_send(request):
 
     url = "https://api.xssh.uz/smsv1/?data="+payload
 
-    response = requests.request("POST", url)
+    try:
+        response = requests.request("POST", url)
 
-    if response.json()['ok'] == True:
+        if response.json()['ok'] == True:
+            worker.code = CODE
+            worker.save()
+            status = 'Xabar yuborildi'
+        else:
+            worker.code = CODE
+            print(CODE)
+            worker.save()
+            status = 'Raqam noto`g`ri'
+    except:
         worker.code = CODE
+        print(CODE)
         worker.save()
-        status = 'Xabar yuborildi'
-    else:
-        status = 'Nimadur xato ketdi'
+        status = 'Bog`lanishda xato'
 
     return JsonResponse({"status":status})

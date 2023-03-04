@@ -100,7 +100,7 @@ class WorksListView(LoginRequiredMixin, View):
             c_id = int(request.GET.get("id"))
             category = WorkCategory.objects.get(id=c_id)
             category.delete()
-            return redirect('/works') 
+            return redirect('/usta/works') 
         except:
             categories = WorkCategory.objects.filter(admin=request.user.admin)
             context = {
@@ -117,7 +117,7 @@ class WorksListView(LoginRequiredMixin, View):
         category.name = name
         category.price = price
         category.save()
-        return redirect('/works')
+        return redirect('/usta/works')
     
 
 class WorkersListView(LoginRequiredMixin, View):
@@ -149,10 +149,12 @@ class WorkerProfileView(LoginRequiredMixin, View):
         address = request.POST.get('address')
         worker.user.first_name = first_name
         worker.user.last_name = last_name
+        worker.user.username = phone
         worker.phone = phone
         worker.birth = birth
         worker.address = address
         worker.save()
+        worker.user.save()
         return redirect(f'/usta/worker/{worker.id}')
         
     
@@ -189,6 +191,35 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
         admin.workers_money -= price
         admin.save()
         return redirect('/usta/give_money')
+
+
+
+class BugWorksView(LoginRequiredMixin, View):
+    @is_staff
+    def get(self, request):
+        bugs = BugWork.objects.all().order_by('-id')
+        context = {
+            'bugs':bugs
+        }
+        return render(request, 'dashboard/bug-works.html', context)
+    
+    @is_staff
+    def post(self, request):
+        admin = AdminProfile.objects.get(user=request.user)
+        w = int(request.POST.get('worker'))
+        worker = WorkerProfile.objects.get(id=w)
+        price = int(request.POST.get('price'))
+        info = str(request.POST.get('info'))
+        BugWork.objects.create(
+            worker=worker,
+            price=price,
+            info=info
+        )
+        worker.bugs_sum += price
+        worker.save()
+        admin.bugs_money +=price
+        admin.save()
+        return redirect('/usta/bugs')
     
 
 def sms_send(request):
@@ -212,18 +243,23 @@ def sms_send(request):
     })
 
     url = "https://api.xssh.uz/smsv1/?data="+payload
+    try:
+        response = requests.request("POST", url)
 
-    response = requests.request("POST", url)
-
-    if response.json()['ok'] == True:
-        admin.code = CODE
-        admin.save()
-        status = 'Xabar yuborildi'
-    else:
+        if response.json()['ok'] == True:
+            admin.code = CODE
+            admin.save()
+            status = 'Xabar yuborildi'
+        else:
+            admin.code = CODE
+            print(CODE)
+            admin.save()
+            status = 'Raqam noto`g`ri'
+    except:
         admin.code = CODE
         print(CODE)
         admin.save()
-        status = 'Nimadur xato ketdi'
+        status = 'Bog`lanishda xato'
 
     return JsonResponse({"status":status})
 
