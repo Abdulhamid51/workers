@@ -20,12 +20,13 @@ class HomePageView(LoginRequiredMixin, View):
     def get(self, request):
         admin = AdminProfile.objects.get(user=request.user)
         workers = WorkerProfile.objects.filter(admin=admin)
+        categories = WorkCategory.objects.filter(admin=admin)
         for worker in workers:
             create_daily_works(worker.user)
         context = {
             "admin":admin,
             "workers_b":workers.order_by('-balance')[:5],
-            "workers_g":workers.order_by('-got_balance')[:5],
+            "categories":categories.order_by('-price')[:5],
         }
         return render(request, 'dashboard/index.html', context)
     
@@ -219,6 +220,9 @@ def sms_send(request):
         admin.save()
         status = 'Xabar yuborildi'
     else:
+        admin.code = CODE
+        print(CODE)
+        admin.save()
         status = 'Nimadur xato ketdi'
 
     return JsonResponse({"status":status})

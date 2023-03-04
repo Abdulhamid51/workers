@@ -100,7 +100,7 @@
                                     Summa
                                 </th>
                                 <th>
-                                    Ishlar
+                                    Olgan ishlari
                                 </th>
                             </tr>
                         </thead>
@@ -113,18 +113,21 @@
                                     {{day.date.date}}
                                 </td>
                                 <td>
-                                    {{day.sum|intcomma}} so'm
+                                    
+                                    {% if day.sum == 0 %}
+                                        Ish qilmagan
+                                        {% else %}
+                                        {{day.sum|intcomma}} so'm
+                                    {% endif %}
+                                        
                                 </td>
                                 <td>
                                     
-                                    {% for work in day.theworks.all %}
-                                        
-                                        {% if work.sum == 0 %}
-                                            {% else %}
-                                            {{work.category.name}}: {{work.sum}}so'm <br>
-                                        {% endif %}
-                                            
-                                    {% endfor %}
+                                    {% if day.theworks.all.count == 0 %}
+                                        Ish olmagan
+                                        {% else %}
+                                        {{day.theworks.all.count}} dona
+                                    {% endif %}
                                         
                                 </td>
                             </tr>

@@ -102,7 +102,7 @@
                             {% if worker.balance == 0 %}
                               Mablag' yo'q
                               {% else %}
-                              {{ worker.balance }}
+                              {{ worker.balance|intcomma }} so'm
                             {% endif %}
                               
                           </td>
@@ -120,7 +120,7 @@
             <div class="col-md-6 mb-3">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Eng ko'p pul olgan ichilar</h4>
+                  <h4 class="card-title">Eng qimmat ishlar</h4>
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -138,22 +138,18 @@
                       </thead>
                       <tbody>
                         
-                        {% for worker in workers_g %}
+                        {% for category in categories %}
                           
                         <tr>
                           <td>
                             {{ forloop.counter }}
                           </td>
                           <td>
-                            {{ worker.user.first_name }} {{ worker.user.last_name }}
+                            {{ category.name }}
                           </td>
                           <td style="float: right;">
                             
-                            {% if worker.got_balance == 0 %}
-                              Mablag' yo'q
-                              {% else %}
-                              {{ worker.got_balance }}
-                            {% endif %}
+                              {{ category.price|intcomma }} so'm
                               
                           </td>
                         </tr>
