@@ -7,8 +7,8 @@ from django.db.models.signals import post_save
 class AdminProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='admin')
     date = models.DateTimeField(auto_now_add=True)
-    gave_money = models.PositiveIntegerField(default=0)
-    workers_money = models.PositiveIntegerField(default=0)
+    gave_money = models.IntegerField(default=0)
+    workers_money = models.IntegerField(default=0)
 
     code = models.IntegerField(default=0)
 
@@ -57,6 +57,9 @@ class Day(models.Model):
     worker = models.ForeignKey(WorkerProfile, on_delete=models.CASCADE, related_name='days')
     date = models.DateTimeField(auto_now_add=True)
     sum = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-date']
 
     def __str__(self):
         return str(self.date)

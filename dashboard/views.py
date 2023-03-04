@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -127,6 +127,33 @@ class WorkersListView(LoginRequiredMixin, View):
             'workers':workers
         }
         return render(request, 'dashboard/workers_list.html', context)
+
+
+class WorkerProfileView(LoginRequiredMixin, View):
+    @is_staff
+    def get(self, request, id):
+        worker = get_object_or_404(WorkerProfile, id=id)
+        context = {
+            'worker':worker
+        }
+        return render(request, 'dashboard/detail.html', context)
+    
+    @is_staff
+    def post(self, request, id):
+        worker = get_object_or_404(WorkerProfile, id=id)
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        phone = request.POST.get('phone')
+        birth = request.POST.get('birth')
+        address = request.POST.get('address')
+        worker.user.first_name = first_name
+        worker.user.last_name = last_name
+        worker.phone = phone
+        worker.birth = birth
+        worker.address = address
+        worker.save()
+        return redirect(f'/usta/worker/{worker.id}')
+        
     
 
 class GiveMoneyHistoryListView(LoginRequiredMixin, View):
@@ -160,7 +187,7 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
         admin.gave_money +=price
         admin.workers_money -= price
         admin.save()
-        return redirect('/give_money')
+        return redirect('/usta/give_money')
     
 
 def sms_send(request):
