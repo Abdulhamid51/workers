@@ -257,7 +257,7 @@ def sms_send(request):
         if response.json()['ok'] == True:
             admin.code = CODE
             admin.save()
-            status = response.json()
+            status = 'Xabar yuborildi'
         else:
             status = 'Xabar yuborilmadi'
     except:
