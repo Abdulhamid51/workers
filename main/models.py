@@ -59,6 +59,7 @@ class Day(models.Model):
     worker = models.ForeignKey(WorkerProfile, on_delete=models.CASCADE, related_name='days')
     date = models.DateTimeField(auto_now_add=True)
     sum = models.IntegerField(default=0)
+    sent_balance = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['-date']

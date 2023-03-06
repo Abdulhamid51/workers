@@ -158,28 +158,34 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            
+
                                                             {% for work in day.theworks.all %}
+
+                                                            {% if work.sum == 0 %}
+                                                            {% else %}
                                                             <tr>
                                                                 <td>
                                                                     {{work.category.name}}
                                                                 </td>
                                                                 <td>
-                                                                    
+
                                                                     {% if work.category.type == 'dona' %}
-                                                                        {{work.count}} ta
-                                                                        {% else %}
-                                                                        {{work.length}} metr
+                                                                    {{work.count}} ta
+                                                                    {% else %}
+                                                                    {{work.length}} metr
                                                                     {% endif %}
-                                                                        
+
                                                                 </td>
                                                                 <td style="float: right;">
                                                                     {{work.sum|intcomma}} <br>
                                                                     <small style="float: right;">so'm</small>
                                                                 </td>
-                                                            </tr> 
+                                                            </tr>
+
+                                                            {% endif %}
+
                                                             {% endfor %}
-                                                                
+
                                                         </tbody>
                                                     </table>
                                                 </div>

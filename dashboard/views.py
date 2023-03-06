@@ -22,10 +22,14 @@ class HomePageView(LoginRequiredMixin, View):
         workers = WorkerProfile.objects.filter(admin=admin)
         categories = WorkCategory.objects.filter(admin=admin)
         balance = 0
+        gave_balance = 0
+        for history in BalanceHistory.objects.all():
+            gave_balance += history.got_sum
         for worker in workers:
             balance += worker.balance
             create_daily_works(worker.user)
         admin.workers_money = balance
+        admin.gave_money = gave_balance
         admin.save()
         context = {
             "admin":admin,
@@ -253,7 +257,7 @@ def sms_send(request):
         if response.json()['ok'] == True:
             admin.code = CODE
             admin.save()
-            status = 'Xabar yuborildi'
+            status = response.json()
         else:
             status = 'Xabar yuborilmadi'
     except:
@@ -283,3 +287,8 @@ def status_work(request):
     work.save()
     worker.save()
     return JsonResponse({"response":response})
+
+def check_day(request):
+    day = request.GET.get('day')
+    if day == 'all':
+        days = Day.objects.filter(date__date=TODAY)

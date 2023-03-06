@@ -23,7 +23,7 @@
                                 Balansi
                             </th>
                             <th>
-                                Olgan pullari
+                                Bugungi ish haqqi
                             </th>
                             <th>
                                 Ishlar soni
@@ -58,10 +58,10 @@
                                 </td>
                                 <td>
                                     
-                                    {% if worker.got_balance == 0 %}
-                                        Pul olgani yo'q
+                                    {% if worker.days.first.sum == 0 %}
+                                        Ish qilgani yo'q
                                     {% else %}
-                                        {{worker.got_balance|intcomma}} so'm
+                                        {{worker.days.first.sum|intcomma}} so'm
                                     {% endif %}
 
                                 </td>

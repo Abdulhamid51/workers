@@ -9,18 +9,22 @@ import requests
 
 from .models import *
 from .funcs import *
+from .decorators import *
 
 
 class ListView(LoginRequiredMixin, View):
+    @is_worker
     def get(self, request):
         day = create_daily_works(request.user)
         works = Work.objects.filter(day=day)
         works_sum = 0
         for work in works:
             works_sum += work.sum
+        day.worker.balance -= day.sum
+        day.worker.balance += works_sum
         day.sum = works_sum
         day.save()
-        get_sum_for_worker(request.user)
+        day.worker.save()
         context = {
             'works':works,
             'day':day
@@ -29,6 +33,7 @@ class ListView(LoginRequiredMixin, View):
 
 
 class HistoryView(LoginRequiredMixin, View):
+    @is_worker
     def get(self, request):
         worker = WorkerProfile.objects.get(user=request.user)
         try:
@@ -45,6 +50,7 @@ class HistoryView(LoginRequiredMixin, View):
 
 
 class ProfileView(LoginRequiredMixin, View):
+    @is_worker
     def get(self, request):
         worker = WorkerProfile.objects.get(user=request.user)
         context = {
@@ -54,9 +60,11 @@ class ProfileView(LoginRequiredMixin, View):
     
 
 class LoginView(View):
+    @is_worker
     def get(self, request):
         return render(request, 'login.html')
     
+    @is_worker
     def post(self, request):
         phone = request.POST.get('phone')
         code = request.POST.get('code')

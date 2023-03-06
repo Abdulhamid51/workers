@@ -46,9 +46,10 @@ def year_month_iter(user_id):
 def create_daily_works(request_user):
     worker = WorkerProfile.objects.get(user=request_user)
     try:
-        last_day = str(worker.days.last().date.date())
+        last_day = str(worker.days.first().date.date())
     except:
         last_day = '2000-12-12'
+    print(last_day, TODAY)
     if last_day == TODAY:
         day = Day.objects.filter(worker=worker).first()
     else:
