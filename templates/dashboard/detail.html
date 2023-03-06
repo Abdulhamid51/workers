@@ -113,22 +113,84 @@
                                     {{day.date.date}}
                                 </td>
                                 <td>
-                                    
+
                                     {% if day.sum == 0 %}
-                                        Ish qilmagan
-                                        {% else %}
-                                        {{day.sum|intcomma}} so'm
+                                    Ish qilmagan
+                                    {% else %}
+                                    {{day.sum|intcomma}} so'm
                                     {% endif %}
-                                        
+
                                 </td>
                                 <td>
-                                    
+
                                     {% if day.theworks.all.count == 0 %}
-                                        Ish olmagan
-                                        {% else %}
-                                        {{day.theworks.all.count}} dona
+                                    Ish olmagan
+                                    {% else %}
+                                    {{day.theworks.all.count}} dona
                                     {% endif %}
-                                        
+
+                                </td>
+                                <td style="float: right;">
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#worklist{{day.id}}">Ishlarni ko'rish</button>
+                                    <!-- Modal edit -->
+                                    <div class="modal fade" id="worklist{{day.id}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content" style="width: 750px;">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">{{day.date.date}}
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    Ish nomi
+                                                                </th>
+                                                                <th>
+                                                                    Soni|Uzunligi
+                                                                </th>
+                                                                <th>
+                                                                    Summasi
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            
+                                                            {% for work in day.theworks.all %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{work.category.name}}
+                                                                </td>
+                                                                <td>
+                                                                    
+                                                                    {% if work.category.type == 'dona' %}
+                                                                        {{work.count}} ta
+                                                                        {% else %}
+                                                                        {{work.length}} metr
+                                                                    {% endif %}
+                                                                        
+                                                                </td>
+                                                                <td style="float: right;">
+                                                                    {{work.sum|intcomma}} <br>
+                                                                    <small style="float: right;">so'm</small>
+                                                                </td>
+                                                            </tr> 
+                                                            {% endfor %}
+                                                                
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Yopish</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </td>
                             </tr>
 

@@ -21,8 +21,12 @@ class HomePageView(LoginRequiredMixin, View):
         admin = AdminProfile.objects.get(user=request.user)
         workers = WorkerProfile.objects.filter(admin=admin)
         categories = WorkCategory.objects.filter(admin=admin)
+        balance = 0
         for worker in workers:
+            balance += worker.balance
             create_daily_works(worker.user)
+        admin.workers_money = balance
+        admin.save()
         context = {
             "admin":admin,
             "workers_b":workers.order_by('-balance')[:5],
@@ -251,14 +255,8 @@ def sms_send(request):
             admin.save()
             status = 'Xabar yuborildi'
         else:
-            admin.code = CODE
-            print(CODE)
-            admin.save()
-            status = 'Raqam noto`g`ri'
+            status = 'Xabar yuborilmadi'
     except:
-        admin.code = CODE
-        print(CODE)
-        admin.save()
         status = 'Bog`lanishda xato'
 
     return JsonResponse({"status":status})
@@ -269,6 +267,7 @@ def status_work(request):
     wid = int(request.GET.get('wid'))
     status = request.GET.get('status')
     worker = WorkerProfile.objects.get(id=wid)
+    create_daily_works(worker.user)
     category = WorkCategory.objects.get(id=id)
     work = Work.objects.filter(day__worker=worker, category=category).last()
     if status == 'true':

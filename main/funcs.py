@@ -49,9 +49,8 @@ def create_daily_works(request_user):
         last_day = str(worker.days.last().date.date())
     except:
         last_day = '2000-12-12'
-
     if last_day == TODAY:
-        day = Day.objects.filter(worker=worker).last()
+        day = Day.objects.filter(worker=worker).first()
     else:
         day = Day.objects.create(worker=worker)
         categories = WorkCategory.objects.all()
@@ -83,7 +82,6 @@ def create_workerprofile(admin_user, phone, f_name, l_name, birth, address):
             last_name=l_name
         )
         password = f_name+phone[:-5]
-        print(password)
         user.set_password(str(password))
         user.save()
         worker = WorkerProfile.objects.create(
@@ -93,6 +91,9 @@ def create_workerprofile(admin_user, phone, f_name, l_name, birth, address):
             user=user,
             admin=admin_user
         )
+        for cat in WorkCategory.objects.filter(admin=admin_user):
+            worker.works.add(cat)
+        worker.save()
         status = 'Ishchi qo`shildi'
     except:
         status = 'Bu telefon raqam oldin qo`shilgan'
