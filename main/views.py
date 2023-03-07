@@ -94,7 +94,7 @@ def list_work_counter(request, id):
 
 def sms_send(request):
     phone = request.GET.get('phone')
-    worker = WorkerProfile.objects.get(phone=phone)
+    
     USER_ID = '1257603816'
     MERCHANT_ID = 212
     TOKEN = 'THpraofsxAqQnkjOPEFSdmeLvRKNluhtbBZXVyIUGiDJYMg'
@@ -116,6 +116,7 @@ def sms_send(request):
     url = "https://api.xssh.uz/smsv1/?data="+payload
 
     try:
+        worker = WorkerProfile.objects.get(phone=phone)
         response = requests.request("POST", url)
 
         if response.json()['ok'] == True:
