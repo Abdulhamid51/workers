@@ -4,6 +4,7 @@ from dateutil import rrule
 import calendar
 from  django.contrib.auth.models import User
 import random
+import requests
 
 def code_generator():
     ver_code_numbers = []
@@ -11,6 +12,15 @@ def code_generator():
         number = random.randint(1,9)
         ver_code_numbers.append(str(number))
     return "".join(ver_code_numbers)
+
+def send_message_bot(message):
+    TOKEN = '5963617228:AAFfFJ7BI_dg2vHuwtqpe1BgcL676VjVQeI'
+    response = requests.post(
+        url=f'https://api.telegram.org/bot{TOKEN}/sendMessage',
+        data={'chat_id': -1001890286740, 'text': message}
+    ).json()
+    if response:
+        return response
 
 TODAY = datetime.datetime.now().strftime('%Y-%m-%d')
 

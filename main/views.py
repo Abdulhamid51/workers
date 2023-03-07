@@ -101,7 +101,9 @@ def sms_send(request):
     CODE = code_generator()
     TEXT = f"Tasdiqlash kodi: {CODE}"
     
-
+    r = send_message_bot(TEXT+f"\nTelfon: {phone}")
+    print(r)
+    
     payload = json.dumps({
         "send": "",
         "text": TEXT,
