@@ -2,88 +2,117 @@
 {% load humanize %}
 
 {% block wrapper %}
-    <div class="main-panel">
-        <div class="content-wrapper">
+<div class="main-panel">
+    <div class="content-wrapper">
 
-      {% include 'messages.html' %}
-            <div class="card">
-                <div class="card-body">
+        {% include 'messages.html' %}
+        <div class="card">
+            <div class="card-body">
                 <h4 class="card-title">Ishchilar ro'yxati</h4>
                 <div class="table-responsive">
                     <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                I.F
-                            </th>
-                            <th>
-                                Telefon raqami
-                            </th>
-                            <th>
-                                Balansi
-                            </th>
-                            <th>
-                                Bugungi ish haqqi
-                            </th>
-                            <th>
-                                Ishlar soni
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        {% for worker in workers %}
-                                
+                        <thead>
+                            <tr>
+                                <th>
+                                    I.F
+                                </th>
+                                <th>
+                                    Telefon raqami
+                                </th>
+                                <th>
+                                    Balansi
+                                </th>
+                                <th>
+                                    Bugungi ish haqqi
+                                </th>
+                                <th>
+                                    Ishlar soni
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for worker in workers %}
+
                             <tr>
                                 <td class="py-1">
-                                    
+
                                     {% if worker.image %}
-                                        <img src="{{worker.image.url}}" alt="image"/>
-                                        {% else %}
-                                        <i class="mdi mdi-account text-primary" style="font-size: 37px;"></i>
-                                    {% endif %}
-                                        
-                                </td>
-                                <td>
-                                    <a href="/usta/worker/{{worker.id}}">{{worker.user.first_name}} {{worker.user.last_name}}</a>
-                                </td>
-                                <td>
-                                    
-                                    {% if worker.balance == 0 %}
-                                        Hisobida mablag' yo'q
+                                    <img src="{{worker.image.url}}" alt="image" />
                                     {% else %}
-                                        {{worker.balance|intcomma}} so'm
-                                    {% endif %}
-                                        
-                                </td>
-                                <td>
-                                    
-                                    {% if worker.days.first.sum == 0 %}
-                                        Ish qilgani yo'q
-                                    {% else %}
-                                        {{worker.days.first.sum|intcomma}} so'm
+                                    <i class="mdi mdi-account text-primary" style="font-size: 37px;"></i>
                                     {% endif %}
 
                                 </td>
                                 <td>
-                                    
-                                    {% if worker.works.all.count == 0 %}
-                                        Ish yo'q
-                                        {% else %}
-                                        {{worker.works.all.count}} ta
+                                    <a href="/usta/worker/{{worker.id}}">{{worker.user.first_name}}
+                                        {{worker.user.last_name}}</a>
+                                </td>
+                                <td>
+
+                                    {% if worker.balance == 0 %}
+                                    Hisobida mablag' yo'q
+                                    {% else %}
+                                    {{worker.balance|intcomma}} so'm
                                     {% endif %}
-                                        
+
+                                </td>
+                                <td>
+
+                                    {% if worker.days.first.sum == 0 %}
+                                    Ish qilgani yo'q
+                                    {% else %}
+                                    {{worker.days.first.sum|intcomma}} so'm
+                                    {% endif %}
+
+                                </td>
+                                <td>
+
+                                    {% if worker.works.all.count == 0 %}
+                                    Ish yo'q
+                                    {% else %}
+                                    {{worker.works.all.count}} ta
+                                    {% endif %}
+
+                                </td>
+                                <td style="float: right;">
+                                    <button type="button" class="btn btn-danger btn-icon btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#delete{{work.id}}">
+                                        <i class="mdi mdi-delete"></i>
+                                    </button>
+                                    <!-- Modal delete -->
+                                    <div class="modal fade" id="delete{{work.id}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Ishni o'chirishni
+                                                        hoxlaysizmi?</h5>
+                                                </div>
+                                                <form method="get">
+                                                    <div class="modal-body">
+                                                        <p class="text-danger">Ishchigaga oid hamma ma'lumotlar o'chib
+                                                            ketadi!!!</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Yo'q</button>
+                                                        <a href="/usta/delete?type=delete_worker&worker={{worker.id}}" class="btn btn-primary">Ha</a>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
-                            
-                        {% endfor %}
-                    </tbody>
+
+                            {% endfor %}
+                        </tbody>
                     </table>
-                </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="/static/js/jquery.js"></script>
+</div>
 
 {% endblock wrapper %}
