@@ -44,8 +44,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Berilgan pullar</h4>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>
@@ -60,25 +59,89 @@
                             </tr>
                         </thead>
                         <tbody>
+
+                            {% for worker in workers %}
                             
-                            {% for history in histories %}
-                                    
+                            {% if worker.balance_history.all.count == 0 %}
+                                {% else %}
                                 <tr>
                                     <td>
-                                        {{history.worker.user.first_name}} {{history.worker.user.last_name}}
+                                        {{worker.user.first_name}} {{worker.user.last_name}}
                                     </td>
                                     <td>
-                                        {{history.got_sum|intcomma}} so'm  
+    
+                                        {% if worker.got_balance == 0 %}
+                                        Pul olmagan
+                                        {% else %}
+                                        {{worker.got_balance|intcomma}} so'm
+                                        {% endif %}
+    
                                     </td>
                                     <td>
-                                        {{history.date.date}}
+    
+                                        {{worker.balance_history.last.date.date}}
+    
+                                    </td>
+                                    <td style="float: right;">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#worklist{{worker.id}}">Batafsil</button>
+                                        <!-- Modal edit -->
+                                        <div class="modal fade" id="worklist{{worker.id}}" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content" style="width: 750px;">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">{{worker.user.first_name}} {{worker.user.last_name}}
+                                                        </h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        Sana
+                                                                    </th>
+                                                                    <th style="float: right;">
+                                                                        Summasi
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+    
+                                                                {% for history in worker.balance_history.all %}
+    
+                                                                <tr>
+                                                                    <td>
+                                                                        {{history.date.date}}
+                                                                    </td>
+                                                                    <td style="float: right;">
+                                                                        {{history.got_sum|intcomma}}
+                                                                        so'm
+                                                                    </td>
+                                                                </tr>
+    
+                                                                {% endfor %}
+    
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a href="/usta/delete/?type=gave_money&worker={{worker.id}}" class="btn btn-danger">O'chirish</a>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Yopish</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+    
                                     </td>
                                 </tr>
+                            {% endif %}
                                 
+
                             {% endfor %}
                         </tbody>
-                        </table>
-                    </div>
+                    </table>
                 </div>
             </div>
         </div>

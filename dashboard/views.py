@@ -26,7 +26,8 @@ class HomePageView(LoginRequiredMixin, View):
         for history in BalanceHistory.objects.all():
             gave_balance += history.got_sum
         for worker in workers:
-            balance += worker.balance
+            if 0 < worker.balance:
+                balance += worker.balance
             create_daily_works(worker.user)
         admin.workers_money = balance
         admin.gave_money = gave_balance
@@ -176,15 +177,14 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
             balance = worker.balance
             return JsonResponse({"balance":balance})
         except:
-            histories = BalanceHistory.objects.all().order_by('-id')
+            workers = WorkerProfile.objects.all()
             context = {
-                'histories':histories
+                'workers':workers
             }
             return render(request, 'dashboard/history.html', context)
     
     @is_staff
     def post(self, request):
-        admin = AdminProfile.objects.get(user=request.user)
         w = int(request.POST.get('worker'))
         worker = WorkerProfile.objects.get(id=w)
         price = int(request.POST.get('price'))
@@ -195,9 +195,6 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
         worker.balance -= price
         worker.got_balance += price
         worker.save()
-        admin.gave_money +=price
-        admin.workers_money -= price
-        admin.save()
         return redirect('/usta/give_money')
 
 
@@ -205,7 +202,7 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
 class BugWorksView(LoginRequiredMixin, View):
     @is_staff
     def get(self, request):
-        bugs = BugWork.objects.all().order_by('-id')
+        bugs = WorkerProfile.objects.all()
         context = {
             'bugs':bugs
         }

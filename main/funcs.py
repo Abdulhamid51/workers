@@ -49,7 +49,6 @@ def create_daily_works(request_user):
         last_day = str(worker.days.first().date.date())
     except:
         last_day = '2000-12-12'
-    print(last_day, TODAY)
     if last_day == TODAY:
         day = Day.objects.filter(worker=worker).first()
     else:

@@ -53,41 +53,110 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Jarimalar</h4>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                I.F
+                            </th>
+                            <th>
+                                Summa
+                            </th>
+                            <th>
+                                Sana
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {% for worker in bugs %}
+                        
+                        {% if worker.bugs.all.count == 0 %}
+                            {% else %}
                             <tr>
-                                <th>
-                                    I.F
-                                </th>
-                                <th>
-                                    Summa
-                                </th>
-                                <th>
-                                    Sana
-                                </th>
+                                <td>
+                                    {{worker.user.first_name}} {{worker.user.last_name}}
+                                </td>
+                                <td>
+
+                                    {% if worker.bugs_sum == 0 %}
+                                    Pul olmagan
+                                    {% else %}
+                                    {{worker.bugs_sum|intcomma}} so'm
+                                    {% endif %}
+
+                                </td>
+                                <td>
+
+                                    {{worker.bugs.last.date.date}}
+
+                                </td>
+                                <td style="float: right;">
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#worklist{{worker.id}}">Batafsil</button>
+                                    <!-- Modal edit -->
+                                    <div class="modal fade" id="worklist{{worker.id}}" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content" style="width: 750px;">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">{{worker.user.first_name}} {{worker.user.last_name}}
+                                                    </h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table table-striped">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>
+                                                                    Sana
+                                                                </th>
+                                                                <th>
+                                                                    Izoh
+                                                                </th>
+                                                                <th style="float: right;">
+                                                                    Summasi
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                            {% for history in worker.bugs.all %}
+
+                                                            <tr>
+                                                                <td>
+                                                                    {{history.date.date}}
+                                                                </td>
+                                                                <td>
+                                                                    {{history.info}}
+                                                                </td>
+                                                                <td style="float: right;">
+                                                                    {{history.price|intcomma}}
+                                                                    so'm
+                                                                </td>
+                                                            </tr>
+
+                                                            {% endfor %}
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <a href="/usta/delete/?type=bug&worker={{worker.id}}" class="btn btn-danger">O'chirish</a>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Yopish</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
+                        {% endif %}
+                            
 
-                            {% for bug in bugs %}
-
-                            <tr>
-                                <td>
-                                    {{bug.worker.user.first_name}} {{bug.worker.user.last_name}}
-                                </td>
-                                <td>
-                                    {{bug.price|intcomma}} so'm
-                                </td>
-                                <td>
-                                    {{bug.date}}
-                                </td>
-                            </tr>
-
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
