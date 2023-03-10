@@ -63,6 +63,7 @@ class AddWorkerView(LoginRequiredMixin, View):
         code = request.POST.get('code')
         birth = request.POST.get('birth')
         address = request.POST.get('address')
+        balance = int(request.POST.get('balance'))
         admin = AdminProfile.objects.get(user=request.user)
         if int(code) == admin.code:
             status = create_workerprofile(
@@ -71,7 +72,8 @@ class AddWorkerView(LoginRequiredMixin, View):
                 f_name=first_name,
                 l_name=last_name,
                 birth=birth,
-                address=address
+                address=address,
+                balance=balance
             )
             messages.info(request, status)
             admin.code = 1012394949
@@ -108,6 +110,10 @@ class WorksListView(LoginRequiredMixin, View):
         try:
             c_id = int(request.GET.get("id"))
             category = WorkCategory.objects.get(id=c_id)
+            works = Work.objects.filter(category=category)
+            for work in works:
+                if work.sum == 0:
+                    work.delete()
             category.delete()
             return redirect('/usta/works') 
         except:
@@ -228,7 +234,7 @@ class BugWorksView(LoginRequiredMixin, View):
     
 
 def sms_send(request):
-    phone = request.GET.get('phone')
+    
     admin_id = request.GET.get('id')
     admin = AdminProfile.objects.get(id=admin_id)
     USER_ID = '1257603816'
@@ -237,30 +243,28 @@ def sms_send(request):
     CODE = code_generator()
     TEXT = f"Tasdiqlash kodi: {CODE}"
     
-    r = send_message_bot(TEXT+f"\nTelfon: {phone}")
-    print(r)
-
-    payload = json.dumps({
-        "send": "",
-        "text": TEXT,
-        "number": phone,
-        "user_id": USER_ID,
-        "token": TOKEN,
-        "id": MERCHANT_ID
-    })
-
-    url = "https://api.xssh.uz/smsv1/?data="+payload
     try:
-        response = requests.request("POST", url)
-
-        if response.json()['ok'] == True:
-            admin.code = CODE
-            admin.save()
-            status = 'Xabar yuborildi'
-        else:
-            status = 'Xabar yuborilmadi'
+        phone = str(request.GET.get('phone'))
     except:
-        status = 'Bog`lanishda xato'
+        phone = 'none'
+    if phone.__len__() == 9:
+        send_message_bot(TEXT+f"\nTelfon: {phone}")
+        payload = json.dumps({
+            "send": "",
+            "text": TEXT,
+            "number": phone,
+            "user_id": USER_ID,
+            "token": TOKEN,
+            "id": MERCHANT_ID
+        })
+
+        url = "https://api.xssh.uz/smsv1/?data="+payload
+        response = requests.request("POST", url)
+        admin.code = CODE
+        admin.save()
+        status = 'Xabar yuborildi'
+    else:
+        status = 'Xabar yuborilmadi'
 
     return JsonResponse({"status":status})
 
@@ -272,7 +276,7 @@ def status_work(request):
     worker = WorkerProfile.objects.get(id=wid)
     create_daily_works(worker.user)
     category = WorkCategory.objects.get(id=id)
-    work = Work.objects.filter(day__worker=worker, category=category).first()
+    work = Work.objects.filter(day__worker=worker, category=category).last()
     if status == 'true':
         work.active = True
         worker.works.add(category)

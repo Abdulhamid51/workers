@@ -90,7 +90,7 @@ def work_counter(work_id, count):
     return True
 
 
-def create_workerprofile(admin_user, phone, f_name, l_name, birth, address):
+def create_workerprofile(admin_user, phone, f_name, l_name, birth, address, balance):
     try:
         user = User.objects.create(
             username=phone,
@@ -105,7 +105,8 @@ def create_workerprofile(admin_user, phone, f_name, l_name, birth, address):
             address=address,
             birth=birth,
             user=user,
-            admin=admin_user
+            admin=admin_user,
+            balance=balance
         )
         for cat in WorkCategory.objects.filter(admin=admin_user):
             worker.works.add(cat)

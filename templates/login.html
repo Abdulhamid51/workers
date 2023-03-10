@@ -20,11 +20,12 @@
         <div id="login_username">
             <div class="login_container">
                 <h1>Kirish</h1>
-                <small style="color: yellowgreen;" id="message"></small>
+                <small style="color: rgb(205, 109, 50);" id="message"></small>
                 <input id="phone" type="number" placeholder="Telefon raqam" name="phone" required/>
                 <input id="code" type="number" placeholder="Tasdiqlash kodi" name="code" required/>
                 <button id="send-code" type="button">SMS yuborish</button>
                 <button id="submit" type="submit">Tasdiqlash</button>
+                <button id="reload" type="button">Qayta urinish</button>
             </div>
         </div>
     </form>
@@ -34,9 +35,11 @@
   <script>
     $('#code').hide()
     $('#submit').hide()
+    $('#reload').hide()
 
     $('#send-code').on('click', function(){
       let phone = $('#phone').val()
+      $('#send-code').hide()
       $.ajax({
           url:'/send_sms/',
           type:'get',
@@ -45,9 +48,16 @@
           },
           success: function(response){
             $('#message').html(response['status'])
-            $('#code').show()
-            $('#submit').show()
-            $('#send-code').hide()
+            if(response['status']==="Xabar yuborilmadi"){
+              $('#reload').show()
+              $('#reload').on('click', function(){
+                $('#send-code').show()
+                $(this).hide()
+              })
+            }else{
+              $('#code').show()
+              $('#submit').show()
+            }
           }
         })
     })

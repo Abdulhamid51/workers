@@ -23,6 +23,7 @@
       
       {% for work in works %}
         
+        {% if work.active == True %}
         {% if work.category.type == 'dona' %}
         <div class="join_box">
           <div class="join_container">
@@ -67,6 +68,9 @@
         
         {% endif %}
           
+        {% endif %}
+          
+          
       {% endfor %}
 
     </div>
@@ -79,7 +83,7 @@
             <p>Umumiy ishlar:</p>
           </div>
           <div class="">
-            <p>{{ works.all.count }} ta</p>
+            <p>{{ request.user.worker.works.all.count }} ta</p>
           </div>
         </div>
         <div class="bottom_content">

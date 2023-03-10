@@ -71,7 +71,6 @@ class LoginView(View):
         worker = WorkerProfile.objects.get(phone=phone)
         username = worker.user.username
         password = worker.user.first_name+phone[:-5]
-        print(password)
         if worker.code == int(code):
             user = authenticate(request,username=username,password=password)
             if user is not None:
@@ -81,7 +80,6 @@ class LoginView(View):
                 return redirect('/')
             
         else:
-            print('aaaaaaa')
             return redirect('/login')
 
 
@@ -93,7 +91,6 @@ def list_work_counter(request, id):
 
 
 def sms_send(request):
-    phone = request.GET.get('phone')
     
     USER_ID = '1257603816'
     MERCHANT_ID = 212
@@ -101,37 +98,27 @@ def sms_send(request):
     CODE = code_generator()
     TEXT = f"Tasdiqlash kodi: {CODE}"
     
-    r = send_message_bot(TEXT+f"\nTelfon: {phone}")
-    print(r)
-    
-    payload = json.dumps({
-        "send": "",
-        "text": TEXT,
-        "number": phone,
-        "user_id": USER_ID,
-        "token": TOKEN,
-        "id": MERCHANT_ID
-    })
-
-    url = "https://api.xssh.uz/smsv1/?data="+payload
-
     try:
-        worker = WorkerProfile.objects.get(phone=phone)
-        response = requests.request("POST", url)
-
-        if response.json()['ok'] == True:
-            worker.code = CODE
-            worker.save()
-            status = 'Xabar yuborildi'
-        else:
-            worker.code = CODE
-            print(CODE)
-            worker.save()
-            status = 'Raqam noto`g`ri'
+        phone = str(request.GET.get('phone'))
     except:
+        phone = 'none'
+    if phone.__len__() == 9:
+        send_message_bot(TEXT+f"\nTelfon: {phone}")
+        payload = json.dumps({
+            "send": "",
+            "text": TEXT,
+            "number": phone,
+            "user_id": USER_ID,
+            "token": TOKEN,
+            "id": MERCHANT_ID
+        })
+        worker = WorkerProfile.objects.get(phone=phone)
+        url = "https://api.xssh.uz/smsv1/?data="+payload
+        response = requests.request("POST", url)
         worker.code = CODE
-        print(CODE)
         worker.save()
-        status = 'Bog`lanishda xato'
+        status = 'Xabar yuborildi'
+    else:
+        status = 'Xabar yuborilmadi'
 
     return JsonResponse({"status":status})

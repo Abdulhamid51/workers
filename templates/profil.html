@@ -46,21 +46,11 @@
             </div>
         </div>
 
-        
-      <a href="miniHistory.html">
-        <div class="history_" id="first_box">
-            <div><i class="fa-solid fa-dollar-sign"></i><p>Oldi berdi tarixi</p></div>
-            <div class="circle"><i class="fa-solid fa-chevron-right"></i></div>
-        </div>
-      </a>
-        <div class="history_" id="btn_">
-            <div><i class="fa-solid fa-mobile"></i><p>Kirilgan qurilmalar</p></div>
-            <div class="circle"><i class="fa-solid fa-chevron-right"></i></div>
-        </div>
+        <br>
       <a href="/usta/logout/">
         <div class="history_">
           <div><i class="fa-solid fa-right-from-bracket"></i><p>Chiqish</p></div>
-          <div><p class="red_text">Kirilgan sana: 12-12-2022</p></div>
+          <div><p class="red_text">Kirilgan sana: {{ request.user.last_login.date}}</p></div>
         </div>
       </a>
     </div>
