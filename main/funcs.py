@@ -6,6 +6,12 @@ from  django.contrib.auth.models import User
 import random
 import requests
 
+def backup(info_text:str):
+    Backup.objects.create(
+        info=info_text
+    )
+
+
 def code_generator():
     ver_code_numbers = []
     for x in range(5):
