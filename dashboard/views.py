@@ -291,3 +291,42 @@ def check_day(request):
     day = request.GET.get('day')
     if day == 'all':
         days = Day.objects.filter(date__date=TODAY)
+
+def clear_history(request):
+    type = request.GET.get('type')
+    if type == 'gave_money':
+        worker_id = int(request.GET.get('worker'))
+        worker = WorkerProfile.objects.get(id=worker_id)
+        worker.got_balance = 0
+        worker.save()
+        b_history = BalanceHistory.objects.filter(worker=worker).delete()
+        return redirect('/usta/give_money')
+    elif type == 'bug':
+        worker_id = int(request.GET.get('worker'))
+        worker = WorkerProfile.objects.get(id=worker_id)
+        worker.bugs_sum = 0
+        worker.save()
+        bugs = BugWork.objects.filter(worker=worker).delete()
+        return redirect('/usta/bugs')
+    # delete worker
+    elif type == 'delete_worker':
+        worker_id = int(request.GET.get('worker'))
+        worker = WorkerProfile.objects.get(id=worker_id)
+        worker.user.delete()
+        return redirect('/usta/workers')
+    # delete all bug works
+    elif type == 'bug_all':
+        workers = WorkerProfile.objects.all()
+        for worker in workers:
+            worker.bugs_sum = 0
+            worker.save()
+        bugs = BugWork.objects.all().delete()
+        return redirect('/usta/bugs')
+    # delete all balance history
+    elif type == 'balance_all':
+        workers = WorkerProfile.objects.all()
+        for worker in workers:
+            worker.got_balance = 0
+            worker.save()
+        bugs = BalanceHistory.objects.all().delete()
+        return redirect('/usta/give_money')
