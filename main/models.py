@@ -99,6 +99,13 @@ class BugWork(models.Model):
         return self.info
 
 
+class Backup(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    info = models.TextField()
+
+    def __str__(self):
+        return str(self.date.strftime('%Y-%m-%d ^ %T'))
+
 # @receiver(post_save, sender=User)
 # def create_profile(sender, instance, created, **kwargs):
 #     if created:

@@ -17,6 +17,4 @@ urlpatterns = [
     path("send_sms/", sms_send, name="sms_send"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-
-    path("delete/", clear_history, name="delete"),
 ]
