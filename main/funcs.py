@@ -126,7 +126,7 @@ def add_work(request_user, work_name, price, type):
         type=type
     )
     for worker in workers:
-        day = worker.days.last()
+        day = worker.days.first()
         Work.objects.create(
             day=day,
             category=category

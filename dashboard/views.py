@@ -272,7 +272,7 @@ def status_work(request):
     worker = WorkerProfile.objects.get(id=wid)
     create_daily_works(worker.user)
     category = WorkCategory.objects.get(id=id)
-    work = Work.objects.filter(day__worker=worker, category=category).last()
+    work = Work.objects.filter(day__worker=worker, category=category).first()
     if status == 'true':
         work.active = True
         worker.works.add(category)
@@ -297,9 +297,12 @@ def clear_history(request):
     if type == 'gave_money':
         worker_id = int(request.GET.get('worker'))
         worker = WorkerProfile.objects.get(id=worker_id)
+        b_history = BalanceHistory.objects.filter(worker=worker)
+        backup_text = f'{worker.user.first_name} {worker.user.last_name}\nCurrent balance - ({worker.balance})'
+        backup(backup_text)
         worker.got_balance = 0
         worker.save()
-        b_history = BalanceHistory.objects.filter(worker=worker).delete()
+        b_history.delete()
         return redirect('/usta/give_money')
     elif type == 'bug':
         worker_id = int(request.GET.get('worker'))
