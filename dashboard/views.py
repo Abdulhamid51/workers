@@ -21,8 +21,12 @@ class HomePageView(LoginRequiredMixin, View):
         admin = AdminProfile.objects.get(user=request.user)
         workers = WorkerProfile.objects.filter(admin=admin)
         categories = WorkCategory.objects.filter(admin=admin)
+        bugs = BugWork.objects.all()
         balance = 0
         gave_balance = 0
+        bugs_summa = 0
+        for bug in bugs:
+            bugs_summa += bug.price
         for history in BalanceHistory.objects.all():
             if 0 < history.got_sum:
                 gave_balance += history.got_sum
@@ -32,6 +36,7 @@ class HomePageView(LoginRequiredMixin, View):
             create_daily_works(worker.user)
         admin.workers_money = balance
         admin.gave_money = gave_balance
+        admin.bugs_money = bugs_summa
         admin.save()
         context = {
             "admin":admin,
