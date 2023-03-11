@@ -155,6 +155,9 @@
                                                                 <th>
                                                                     Summasi
                                                                 </th>
+                                                                <th style="float: right;">
+                                                                    O'zgartirish
+                                                                </th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -171,14 +174,29 @@
 
                                                                     {% if work.category.type == 'dona' %}
                                                                     {{work.count}} ta
+                                                                    <div>
+                                                                        <input data-id="{{work.id}}" id="edit{{work.id}}"
+                                                                            class="form-control form-control-sm editor"
+                                                                            type="number" value="{{work.count}}">
+                                                                    </div>
                                                                     {% else %}
                                                                     {{work.length}} metr
+                                                                    <div>
+                                                                        <input data-id="{{work.id}}" id="edit{{work.id}}"
+                                                                            class="form-control form-control-sm editor"
+                                                                            type="number" value="{{work.length}}">
+                                                                    </div>
                                                                     {% endif %}
 
                                                                 </td>
+                                                                <td>
+                                                                    {{work.sum|intcomma}}
+                                                                    <small>so'm</small>
+                                                                </td>
                                                                 <td style="float: right;">
-                                                                    {{work.sum|intcomma}} <br>
-                                                                    <small style="float: right;">so'm</small>
+                                                                    <button type="button" data-target="#edit{{work.id}}"
+                                                                        class="btn btn-sm btn-warning open-editor"><i
+                                                                            class="mdi mdi-pencil"></i></button>
                                                                 </td>
                                                             </tr>
 
@@ -190,6 +208,7 @@
                                                     </table>
                                                 </div>
                                                 <div class="modal-footer">
+                                                    <a href="" class="btn btn-primary">Saqlash</a>
                                                     <button type="button" class="btn btn-secondary"
                                                         data-bs-dismiss="modal">Yopish</button>
                                                 </div>
@@ -227,5 +246,25 @@
 </div>
 
 <script src="/static/js/jquery.min.js"></script>
+<script>
+    $('.editor').hide()
+    $('.open-editor').on('click', function () {
+        let edit = $(this).data('target')
+        console.log(edit)
+        $(edit).show()
+        $(edit).on('change', function () {
+            let id = $(this).data('id')
+            let value = $(this).val()
+            $.ajax({
+                url: `/ajax_work_counter/${id}`,
+                type: 'get',
+                data: { 'value': value },
+                success: function (response) {
+                    console.log(response['status'])
+                }
+            })
+        })
+    })
+</script>
 
 {% endblock wrapper %}

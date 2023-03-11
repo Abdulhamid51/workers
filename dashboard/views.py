@@ -24,7 +24,8 @@ class HomePageView(LoginRequiredMixin, View):
         balance = 0
         gave_balance = 0
         for history in BalanceHistory.objects.all():
-            gave_balance += history.got_sum
+            if 0 < history.got_sum:
+                gave_balance += history.got_sum
         for worker in workers:
             if 0 < worker.balance:
                 balance += worker.balance
@@ -149,6 +150,18 @@ class WorkerProfileView(LoginRequiredMixin, View):
     @is_staff
     def get(self, request, id):
         worker = get_object_or_404(WorkerProfile, id=id)
+        days = Day.objects.filter(worker=worker)
+        for day in days:
+            works = Work.objects.filter(day=day)
+            works_sum = 0
+            for work in works:
+                works_sum += work.sum
+            day.worker.balance -= day.sum
+            day.worker.balance += works_sum
+            day.sum = works_sum
+            day.save()
+            day.worker.save()
+
         context = {
             'worker':worker
         }
@@ -180,7 +193,10 @@ class GiveMoneyHistoryListView(LoginRequiredMixin, View):
         try:
             w_id = request.GET.get('worker_id')
             worker = WorkerProfile.objects.get(id=w_id)
-            balance = worker.balance
+            if worker.balance > 0:
+                balance = worker.balance
+            else:
+                balance = 0
             return JsonResponse({"balance":balance})
         except:
             workers = WorkerProfile.objects.all()
