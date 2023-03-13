@@ -114,7 +114,7 @@ def sms_send(request):
         })
         worker = WorkerProfile.objects.get(phone=phone)
         url = "https://api.xssh.uz/smsv1/?data="+payload
-        response = requests.request("POST", url)
+        # response = requests.request("POST", url)
         worker.code = CODE
         worker.save()
         status = 'Xabar yuborildi'
