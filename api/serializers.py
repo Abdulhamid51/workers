@@ -15,9 +15,20 @@ class WorksSerializer(serializers.ModelSerializer):
 
 
 class DaysSerializer(serializers.ModelSerializer):
-    theworks = WorksSerializer(many=True)
+    works = serializers.SerializerMethodField(read_only=True)
+    date = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Day
-        fields = ['id', 'worker', 'date', 'sum', 'theworks']
+        fields = ['id', 'worker', 'date', 'sum', 'works']
+    
+    def get_works(self, instance):
+        count = 0
+        for i in instance.theworks.all():
+            if i.active == True:
+                count += 1
+        return count
+    
+    def get_date(self, obj):
+        return obj.date.date()
 
         
